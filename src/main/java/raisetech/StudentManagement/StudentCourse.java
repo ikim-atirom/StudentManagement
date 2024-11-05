@@ -8,15 +8,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@JsonPropertyOrder({"cId", "cName", "stId", "startDate", "endDate"})
+@JsonPropertyOrder({"courseId", "courseName", "studentId", "startDate", "endDate"})
 public class StudentCourse {
 
-  @JsonProperty("cId")
-  private String cId;
-  @JsonProperty("cName")
-  private String cName;
+  @JsonProperty("courseId")
+  private String courseId;
+  @JsonProperty("courseName")
+  private String courseName;
 
-  private int stId;
+  private int studentId;
   private LocalDate startDate;
   private LocalDate endDate;
 }
