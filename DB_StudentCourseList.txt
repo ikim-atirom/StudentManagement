@@ -1,0 +1,51 @@
+[
+	{
+		"courseId" : "rt001",
+		"courseName" : "AWSフル",
+		"studentId" : 1,
+		"startDate" : "2024-04-01",
+		"endDate" : "2034-03-31"
+	},
+	{
+		"courseId" : "rt002",
+		"courseName" : "Javaフル",
+		"studentId" : 2,
+		"startDate" : "2024-05-01",
+		"endDate" : "2034-04-30"
+	},
+	{
+		"courseId" : "rt003",
+		"courseName" : "デザイン",
+		"studentId" : 3,
+		"startDate" : "2024-06-01",
+		"endDate" : "2034-05-31"
+	},
+	{
+		"courseId" : "rt004",
+		"courseName" : "Webマーケティング",
+		"studentId" : 4,
+		"startDate" : "2024-07-01",
+		"endDate" : "2034-06-30"
+	},
+	{
+		"courseId" : "rt005",
+		"courseName" : "WordPress副業",
+		"studentId" : 5,
+		"startDate" : "2024-08-01",
+		"endDate" : "2034-07-31"
+	},
+	{
+		"courseId" : "sub001",
+		"courseName" : "転職クエスト",
+		"studentId" : 1,
+		"startDate" : "2024-09-01",
+		"endDate" : "2034-08-31"
+	},
+	{
+		"courseId" : "sub002",
+		"courseName" : "フクリー",
+		"studentId" : 2,
+		"startDate" : "2024-10-01",
+		"endDate" : "2034-09-30"
+	}
+]
