@@ -1,0 +1,103 @@
+[
+	{
+		"studentId" : 1,
+		"fullName" : "モンキー・D・ルフィ",
+		"kanaName" : "モンキーディールフィ",
+		"nickname" : "ニカ",
+		"age" : 19,
+		"gender" : "男",
+		"email" : "rubber@example.com",
+		"address" : "フーシャ村"
+	},
+	{
+		"studentId" : 2,
+		"fullName" : "ロロノア・ゾロ",
+		"kanaName" : "ロロノアゾロ",
+		"nickname" : "マリモ",
+		"age" : 21,
+		"gender" : "男",
+		"email" : "swords@example.com",
+		"address" : "シモツキ村"
+	},
+	{
+		"studentId" : 3,
+		"fullName" : "ナミ",
+		"kanaName" : "ナミ",
+		"nickname" : "ナミさーん",
+		"age" : 20,
+		"gender" : "女",
+		"email" : "orange@example.com",
+		"address" : "ココヤシ村"
+	},
+	{
+		"studentId" : 4,
+		"fullName" : "ウソップ",
+		"kanaName" : "ウソップ",
+		"nickname" : "そげキング",
+		"age" : 19,
+		"gender" : "勇敢な海の戦士",
+		"email" : "sniper@example.com",
+		"address" : "シロップ村"
+	},
+	{
+		"studentId" : 5,
+		"fullName" : "ヴィンスモーク・サンジ",
+		"kanaName" : "ヴィンスモークサンジ",
+		"nickname" : "素敵マユゲ",
+		"age" : 21,
+		"gender" : "男",
+		"email" : "cook@example.com",
+		"address" : "ノース・ブルー"
+	},
+	{
+		"studentId" : 6,
+		"fullName" : "トニートニー・チョッパー",
+		"kanaName" : "トニートニーチョッパー",
+		"nickname" : "たぬき",
+		"age" : 17,
+		"gender" : "トナカイ",
+		"email" : "rumble@example.com",
+		"address" : "ドラム王国"
+	},
+	{
+		"studentId" : 7,
+		"fullName" : "ニコ・ロビン",
+		"kanaName" : "ニコロビン",
+		"nickname" : "ロビン",
+		"age" : 30,
+		"gender" : "女",
+		"email" : "fleur@example.com",
+		"address" : "オハラ"
+	},
+	{
+		"studentId" : 8,
+		"fullName" : "フランキー",
+		"kanaName" : "フランキー",
+		"nickname" : "鉄人",
+		"age" : 36,
+		"gender" : "サイボーグ",
+		"email" : "super@example.com",
+		"address" : "サウス・ブルー"
+	},
+	{
+		"studentId" : 9,
+		"fullName" : "ブルック",
+		"kanaName" : "ブルック",
+		"nickname" : "ソウルキング",
+		"age" : 90,
+		"gender" : "ホネ",
+		"email" : "yohohoho@example.com",
+		"address" : "ウエスト・ブルー"
+	},
+	{
+		"studentId" : 10,
+		"fullName" : "ジンベエ",
+		"kanaName" : "ジンベエ",
+		"nickname" : "海侠",
+		"age" : 46,
+		"gender" : "サメ",
+		"email" : "taiyo@example.com",
+		"address" : "リュウグウ王国"
+	}
+	]
+	
