@@ -1,0 +1,9 @@
+[
+	{
+		"courseId" : "rt002",
+		"courseName" : "Javaフル",
+		"studentId" : 2,
+		"startDate" : "2024-05-01",
+		"endDate" : "2034-04-30"
+	}
+	]
