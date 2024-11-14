@@ -22,6 +22,7 @@ public class StudentService {
     return repository.searchStudent();
   }
 
+  // 使わなさそうだったら消す
   public List<Student> search30sStudentList() {
     List<Student> students = repository.searchStudent();
     return students.stream()
@@ -33,10 +34,10 @@ public class StudentService {
     return repository.searchCourse();
   }
 
-  public List<StudentCourse> seachJavaCourseList() {
+  // 使わなさそうだったら消す
+  public List<StudentCourse> searchJavaCourseList() {
     List<StudentCourse> studentCourses = repository.searchCourse();
     return studentCourses.stream().filter(studentCourse -> studentCourse.getCourseName().contains("Java"))
         .collect(Collectors.toList());
   }
 }
-

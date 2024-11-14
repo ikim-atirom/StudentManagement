@@ -15,8 +15,7 @@ public class StudentCourse {
   private String courseId;
   @JsonProperty("courseName")
   private String courseName;
-
-  private int studentId;
+  private Integer studentId;
   private LocalDate startDate;
   private LocalDate endDate;
 }
