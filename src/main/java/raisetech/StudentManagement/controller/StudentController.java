@@ -1,18 +1,16 @@
 package raisetech.StudentManagement.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
-import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.service.StudentService;
 
-@RestController
+@Controller
 public class StudentController { // UI層
 
   private StudentService service;
@@ -25,27 +23,16 @@ public class StudentController { // UI層
   }
 
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList() {
+  public String getStudentList(Model model) {
     List<Student> students = service.searchStudentList();
     List<StudentCourse> studentsCourses = service.searchStudentCourseList();
 
-    return converter.convertStudentDetails(students, studentsCourses);
-  }
-
-  // 使わなさそうだったら消す
-  @GetMapping("/30sStudentList")
-  public List<Student> get30sStudentList() {
-    return service.search30sStudentList();
+    model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
+    return "studentList"; // templatesのファイル名
   }
 
   @GetMapping("/studentCourseList")
   public List<StudentCourse> getStudentCourseList() {
     return service.searchStudentCourseList();
-  }
-
-  // 使わなさそうだったら消す
-  @GetMapping("/JavaCourseList")
-  public List<StudentCourse> getJavaCourseList() {
-    return service.searchJavaCourseList();
   }
 }
