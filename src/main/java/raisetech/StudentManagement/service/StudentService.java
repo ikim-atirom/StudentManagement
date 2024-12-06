@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
 import raisetech.StudentManagement.domain.StudentDetail;
@@ -30,6 +31,7 @@ public class StudentService {
   }
 
   // 受講生登録
+  @Transactional
   public void registerStudent(StudentDetail studentDetail) {
     Student student = new Student();
     student.setFullName(studentDetail.getStudent().getFullName());
@@ -46,9 +48,9 @@ public class StudentService {
 
   // 受講生コース登録
   public void registerStudentCourses(Integer studentId, List<String> selectedCourseNames) {
-    // 受講開始日を登録時間に、終了予定日を10年後に設定
+    // 受講開始日を登録時間に、終了予定日を1年後に設定
     LocalDate startDate = LocalDate.now();
-    LocalDate endDate = startDate.plusYears(10);
+    LocalDate endDate = startDate.plusYears(1);
 
     // 入力フォームで受け取ったコース情報に、受講生ID、受講開始日、終了予定日を紐づけ
     for (String courseName : selectedCourseNames) {
