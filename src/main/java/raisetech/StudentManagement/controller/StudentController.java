@@ -1,7 +1,5 @@
 package raisetech.StudentManagement.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
@@ -61,6 +60,31 @@ public class StudentController { // UI層
     Integer studentId = studentDetail.getStudent().getStudentId();
     service.registerStudentCourses(studentId, studentDetail.getSelectedCourseNames());
 
+    return "redirect:/studentList";
+  }
+
+  @GetMapping("/studentInfo/{studentId}")
+  public String getStudentInfo(@PathVariable("studentId") Integer studentId, Model model) {
+    Student student = service.searchStudentByStudentId(studentId);
+    List<String> selectedCourses = service.getSelectedCoursesByStudentId(studentId);
+
+    StudentDetail studentDetail = new StudentDetail();
+    studentDetail.setStudent(student);
+    studentDetail.setSelectedCourseNames(selectedCourses);
+
+    model.addAttribute("studentDetail", studentDetail);
+    return "updateStudent";
+  }
+
+  @PostMapping("/updateStudent")
+  public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    if (result.hasErrors()) {
+      result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
+      return "updateStudent";
+    }
+
+    // 受講生情報更新
+    service.updateStudent(studentDetail);
     return "redirect:/studentList";
   }
 }

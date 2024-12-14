@@ -22,7 +22,7 @@
     <br>
     性別を選択してください
     <label for="gender_male">
-      <input type="radio" id="gender_male" value="男性" th:field="*{student.gender}" required>
+      <input type="radio" id="gender_male" value="男性" th:field="*{student.gender}" required/>
       男性
     </label>
     <label for="gender_female">
@@ -44,16 +44,33 @@
   <div>
     受講するコースを選択してください
     <br>
-    <label for="course"></label>
-    <select id="course" th:field="*{selectedCourseNames}" multiple required>
-      <option value="aws">AWSフルコース</option>
-      <option value="java">Javaフルコース</option>
-      <option value="design">デザインコース</option>
-      <option value="web_marketing">Webマーケティングコース</option>
-      <option value="word_press">WordPress副業コース</option>
-      <option value="tenshoku_quest">転職クエスト</option>
-      <option value="fuk_ly">フクリー</option>
-    </select>
+    <label>
+      <input type="checkbox" th:field="*{selectedCourseNames}" value="AWSフル">AWSフルコース
+    </label>
+    <br>
+    <label>
+      <input type="checkbox" th:field="*{selectedCourseNames}" value="Javaフル">Javaフルコース
+    </label>
+    <br>
+    <label>
+      <input type="checkbox" th:field="*{selectedCourseNames}" value="デザイン">デザインコース
+    </label>
+    <br>
+    <label>
+      <input type="checkbox" th:field="*{selectedCourseNames}" value="Webマーケティング">Webマーケティングコース
+    </label>
+    <br>
+    <label>
+      <input type="checkbox" th:field="*{selectedCourseNames}" value="WordPress副業">WordPress副業コース
+    </label>
+    <br>
+    <label>
+      <input type="checkbox" th:field="*{selectedCourseNames}" value="転職クエスト">転職クエスト
+    </label>
+    <br>
+    <label>
+      <input type="checkbox" th:field="*{selectedCourseNames}" value="フクリー">フクリー
+    </label>
   </div>
   <div>
     <button type="submit">登録</button>

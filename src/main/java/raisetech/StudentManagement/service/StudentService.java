@@ -1,9 +1,7 @@
 package raisetech.StudentManagement.service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,5 +59,26 @@ public class StudentService {
       studentCourse.setEndDate(endDate);
       repository.insertStudentCourse(studentCourse);
     }
+  }
+
+  // 選択した受講生の情報を表示
+  public Student searchStudentByStudentId(int studentId) {
+    return repository.searchStudentByStudentId(studentId);
+  }
+
+  // 選択した受講生のコース情報を取得
+  public List<String> getSelectedCoursesByStudentId(int studentId) {
+    return repository.getSelectedCoursesByStudentId(studentId);
+  }
+
+  @Transactional
+  public void updateStudent(StudentDetail studentDetail) {
+    Student student = studentDetail.getStudent();
+    int updateRows = repository.updateStudent(student);
+    if (updateRows == 0) {
+      throw new RuntimeException("Student update failed fot student_id: " + student.getStudentId());
+    }
+
+    repository.updateStudent(student);
   }
 }
