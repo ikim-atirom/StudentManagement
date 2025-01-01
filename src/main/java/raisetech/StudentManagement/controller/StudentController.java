@@ -78,13 +78,15 @@ public class StudentController { // UI層
 
   @PostMapping("/updateStudent")
   public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
+    System.out.println(studentDetail.getSelectedCourseNames());
     if (result.hasErrors()) {
       result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
       return "updateStudent";
     }
 
-    // 受講生情報更新
+    // 受講生情報、コース情報更新
     service.updateStudent(studentDetail);
+    service.updateStudentCourse(studentDetail);
     return "redirect:/studentList";
   }
 }

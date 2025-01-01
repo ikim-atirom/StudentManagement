@@ -1,6 +1,7 @@
 package raisetech.StudentManagement.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,14 +72,53 @@ public class StudentService {
     return repository.getSelectedCoursesByStudentId(studentId);
   }
 
+  // 受講生情報の更新
   @Transactional
   public void updateStudent(StudentDetail studentDetail) {
     Student student = studentDetail.getStudent();
-    int updateRows = repository.updateStudent(student);
-    if (updateRows == 0) {
-      throw new RuntimeException("Student update failed fot student_id: " + student.getStudentId());
-    }
-
     repository.updateStudent(student);
+  }
+
+  // 受講生コース情報の更新
+  @Transactional
+  public void updateStudentCourse(StudentDetail studentDetail) {
+    Integer studentId = studentDetail.getStudent().getStudentId();
+    LocalDate startDate = LocalDate.now();
+    LocalDate endDate = startDate.plusYears(1);
+    // 既存のコース情報（コース名）
+    List<StudentCourse> existingCourses = repository.searchCourseOfSelectedStudent(studentId);
+    List<String> existingCourseNames = new ArrayList<>();
+    for (StudentCourse course : existingCourses) {
+      existingCourseNames.add(course.getCourseName());
+    }
+    // htmlで受け取ったコース情報（コース名）
+    List<String> updateStudentCourseNames = studentDetail.getSelectedCourseNames();
+    // 追加が必要なコース（コース名）
+    List<String> coursesToAdd = new ArrayList<>();
+    for (String courseName : updateStudentCourseNames) {
+      if (!existingCourseNames.contains(courseName)) {
+        coursesToAdd.add(courseName);
+      }
+    }
+    // 削除が必要なコース（コースID）
+    List<StudentCourse> coursesToRemove = new ArrayList<>();
+    for (StudentCourse course : existingCourses) {
+      if (!updateStudentCourseNames.contains(course.getCourseName())) {
+        coursesToRemove.add(course);
+      }
+    }
+    // 追加処理
+    for (String courseName : coursesToAdd) {
+      StudentCourse newCourse = new StudentCourse();
+      newCourse.setStudentId(studentId);
+      newCourse.setCourseName(courseName);
+      newCourse.setStartDate(startDate);
+      newCourse.setEndDate(endDate);
+      repository.insertStudentCourse(newCourse);
+    }
+    // 削除処理
+    for (StudentCourse course : coursesToRemove) {
+      repository.deleteStudentCourseByCourseId(course.getCourseId());
+    }
   }
 }

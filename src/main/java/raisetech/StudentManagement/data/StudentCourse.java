@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class StudentCourse {
 
-  private String courseId;
+  private Integer courseId;
   private String courseName;
   private Integer studentId;
   private LocalDate startDate;
