@@ -1,6 +1,5 @@
 package raisetech.StudentManagement.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -86,7 +85,8 @@ public class StudentController { // UI層
 
     // 受講生情報、コース情報更新
     service.updateStudent(studentDetail);
-    service.updateStudentCourse(studentDetail);
+    service.addStudentCourse(studentDetail);
+    service.deleteStudentCourse(studentDetail);
     return "redirect:/studentList";
   }
 }

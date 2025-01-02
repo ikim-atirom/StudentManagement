@@ -20,7 +20,7 @@ public interface StudentRepository {  //DB
   List<StudentCourse> searchCourse();
 
   @Select("SELECT * FROM students_courses WHERE student_id = #{studentId}")
-  List<StudentCourse> searchCourseOfSelectedStudent(int studentId);
+  List<StudentCourse> findCourseOfSelectedStudent(int studentId);
 
   @Insert("INSERT INTO students (full_name, kana_name, nickname, age, gender, email, address)" +
           "VALUES (#{fullName}, #{kanaName}, #{nickname}, #{age}, #{gender}, #{email}, #{address})")
@@ -33,10 +33,10 @@ public interface StudentRepository {  //DB
   void insertStudentCourse(StudentCourse studentCourse);
 
   @Select("SELECT * FROM students WHERE student_id = #{studentId}")
-  Student searchStudentByStudentId(int studentId);
+  Student findStudentByStudentId(int studentId);
 
   @Select("SELECT course_name FROM students_courses WHERE student_id = #{studentId}")
-  List<String> getSelectedCoursesByStudentId(int studentId);
+  List<String> findSelectedCoursesByStudentId(int studentId);
 
   @Update("UPDATE students SET full_name = #{fullName}, kana_name = #{kanaName}, nickname = #{nickname}, age = #{age}, gender = #{gender}, email = #{email}, address = #{address} WHERE student_id = #{studentId}")
   void updateStudent(Student student);
