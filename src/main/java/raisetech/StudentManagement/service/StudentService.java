@@ -3,7 +3,6 @@ package raisetech.StudentManagement.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFormattedTextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,11 +79,11 @@ public class StudentService {
     repository.updateStudent(student);
   }
 
-  // privateで共通化したメソッド上に移動しようか
   // 既存のコース情報の取得
   private List<StudentCourse> getExistingCourses(Integer studentId) {
     return repository.findCourseOfSelectedStudent(studentId);
   }
+
   // 既存のコース情報（コース名）の取得
   private List<String> getExistingCourseNames(Integer studentId) {
     List<StudentCourse> existingCourses = getExistingCourses(studentId);
@@ -94,6 +93,7 @@ public class StudentService {
     }
     return existingCourseNames;
   }
+
   // htmlで受け取ったコース情報（コース名）
   private List<String> getUpdatedCourseNames(StudentDetail studentDetail) {
     return studentDetail.getSelectedCourseNames();
