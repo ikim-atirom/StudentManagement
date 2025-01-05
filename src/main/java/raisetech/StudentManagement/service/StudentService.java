@@ -14,6 +14,8 @@ import raisetech.StudentManagement.repository.StudentRepository;
 @Service
 public class StudentService {
 
+  private StudentRepository repository;
+
   @Autowired
   public StudentService(StudentRepository repository) {
     this.repository = repository;
@@ -119,8 +121,6 @@ public class StudentService {
       repository.deleteStudentCourseByCourseId(course.getCourseId());
     }
   }
-
-  private StudentRepository repository;
 
   // 既存のコース情報の取得
   private List<StudentCourse> getExistingCourses(Integer studentId) {
