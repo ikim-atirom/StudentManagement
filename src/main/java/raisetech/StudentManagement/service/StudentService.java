@@ -14,8 +14,6 @@ import raisetech.StudentManagement.repository.StudentRepository;
 @Service
 public class StudentService {
 
-  private StudentRepository repository;
-
   @Autowired
   public StudentService(StudentRepository repository) {
     this.repository = repository;
@@ -79,26 +77,6 @@ public class StudentService {
     repository.updateStudent(student);
   }
 
-  // 既存のコース情報の取得
-  private List<StudentCourse> getExistingCourses(Integer studentId) {
-    return repository.findCourseOfSelectedStudent(studentId);
-  }
-
-  // 既存のコース情報（コース名）の取得
-  private List<String> getExistingCourseNames(Integer studentId) {
-    List<StudentCourse> existingCourses = getExistingCourses(studentId);
-    List<String> existingCourseNames = new ArrayList<>();
-    for (StudentCourse course : existingCourses) { // 見慣れたらStreamAPI使う
-      existingCourseNames.add(course.getCourseName());
-    }
-    return existingCourseNames;
-  }
-
-  // htmlで受け取ったコース情報（コース名）
-  private List<String> getUpdatedCourseNames(StudentDetail studentDetail) {
-    return studentDetail.getSelectedCourseNames();
-  }
-
   // 受講生コース情報の更新（追加）
   @Transactional
   public void addStudentCourse(StudentDetail studentDetail) {
@@ -140,5 +118,27 @@ public class StudentService {
     for (StudentCourse course : coursesToRemove) {
       repository.deleteStudentCourseByCourseId(course.getCourseId());
     }
+  }
+
+  private StudentRepository repository;
+
+  // 既存のコース情報の取得
+  private List<StudentCourse> getExistingCourses(Integer studentId) {
+    return repository.findCourseOfSelectedStudent(studentId);
+  }
+
+  // 既存のコース情報（コース名）の取得
+  private List<String> getExistingCourseNames(Integer studentId) {
+    List<StudentCourse> existingCourses = getExistingCourses(studentId);
+    List<String> existingCourseNames = new ArrayList<>();
+    for (StudentCourse course : existingCourses) { // 見慣れたらStreamAPI使う
+      existingCourseNames.add(course.getCourseName());
+    }
+    return existingCourseNames;
+  }
+
+  // htmlで受け取ったコース情報（コース名）
+  private List<String> getUpdatedCourseNames(StudentDetail studentDetail) {
+    return studentDetail.getSelectedCourseNames();
   }
 }
