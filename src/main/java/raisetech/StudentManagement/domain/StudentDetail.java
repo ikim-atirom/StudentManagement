@@ -13,4 +13,5 @@ public class StudentDetail {
   private Student student;
   private List<StudentCourse> studentsCourses;
   private List<String> selectedCourseNames;
+  // htmlで受け取った情報を色分けする必要なかったかも…List<StudentCourse> studentCoursesに統一したほうがよさそう
 }
