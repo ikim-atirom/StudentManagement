@@ -25,6 +25,10 @@ public class StudentService {
     return repository.searchStudent();
   }
 
+  public List<Student> searchActiveStudentList() {
+    return repository.searchAllActiveStudents();
+  }
+
   public List<StudentCourse> searchStudentCourseList() {
     return repository.searchCourse();
   }
@@ -40,7 +44,7 @@ public class StudentService {
     student.setGender(studentDetail.getStudent().getGender());
     student.setEmail(studentDetail.getStudent().getEmail());
     student.setAddress(studentDetail.getStudent().getAddress());
-    repository.insertStudent(student);
+    repository.registerStudent(student);
     // MySQLのカウントアップで自動生成した受講生IDを反映
     studentDetail.getStudent().setStudentId(student.getStudentId());
   }
@@ -58,7 +62,7 @@ public class StudentService {
       studentCourse.setCourseName(courseName);
       studentCourse.setStartDate(startDate);
       studentCourse.setEndDate(endDate);
-      repository.insertStudentCourse(studentCourse);
+      repository.registerStudentCourse(studentCourse);
     }
   }
 
@@ -100,7 +104,7 @@ public class StudentService {
       newCourse.setCourseName(courseName);
       newCourse.setStartDate(startDate);
       newCourse.setEndDate(endDate);
-      repository.insertStudentCourse(newCourse);
+      repository.registerStudentCourse(newCourse);
     }
   }
 

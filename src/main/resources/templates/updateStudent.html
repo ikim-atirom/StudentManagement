@@ -75,6 +75,17 @@
       <input type="checkbox" th:field="*{selectedCourseNames}" value="フクリー">フクリー
     </label>
   </div>
+  <br>
+  <div>
+    <label for="remark">備考</label>
+    <br>
+    <textarea id="remark" th:field="*{student.remark}" rows="4" cols="40"></textarea>
+  </div>
+  <br>
+  <div>
+    <input type="checkbox" th:field="*{student.deleted}" value="true">退会
+  </div>
+  <br>
   <div>
     <button type="submit">更新</button>
     <button type="reset">元に戻す</button>
