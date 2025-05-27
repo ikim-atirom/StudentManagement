@@ -36,6 +36,15 @@ public class StudentController { // UI層
     return "studentList"; // templatesのファイル名
   }
 
+  @GetMapping("/activeStudentList")
+  public String getActiveStudentList(Model model) {
+    List<Student> activeStudents = service.searchActiveStudentList();
+    List<StudentCourse> studentsCourses = service.searchStudentCourseList();
+
+    model.addAttribute("studentList", converter.convertStudentDetails(activeStudents, studentsCourses));
+    return "studentList";
+  }
+
   @GetMapping("/studentCourseList")
   public List<StudentCourse> getStudentCourseList() {
     return service.searchStudentCourseList();
@@ -78,6 +87,8 @@ public class StudentController { // UI層
   @PostMapping("/updateStudent")
   public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
     System.out.println(studentDetail.getSelectedCourseNames());
+    System.out.println(studentDetail.getStudent().getStudentId());
+    System.out.println(studentDetail.getStudent().isDeleted());
     if (result.hasErrors()) {
       result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
       return "updateStudent";

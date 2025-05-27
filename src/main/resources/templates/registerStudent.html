@@ -44,27 +44,34 @@
   <div>
     受講するコースを選択してください
     <br>
-    <label for="aws_full">AWSフルコース</label>
     <input type="checkbox" id="aws_full" th:field="*{selectedCourseNames}" value="AWSフル">
+    <label for="aws_full">AWSフルコース</label>
     <br>
-    <label for="java_full">Javaフルコース</label>
     <input type="checkbox" id="java_full" th:field="*{selectedCourseNames}" value="Javaフル">
+    <label for="java_full">Javaフルコース</label>
     <br>
-    <label for="design">デザインコース</label>
     <input type="checkbox" id="design" th:field="*{selectedCourseNames}" value="デザイン">
+    <label for="design">デザインコース</label>
     <br>
-    <label for="web_marketing">Webマーケティングコース</label>
     <input type="checkbox" id="web_marketing" th:field="*{selectedCourseNames}" value="Webマーケティング">
+    <label for="web_marketing">Webマーケティングコース</label>
     <br>
-    <label for="word_press">WordPress副業コース</label>
     <input type="checkbox" id="word_press" th:field="*{selectedCourseNames}" value="WordPress副業">
+    <label for="word_press">WordPress副業コース</label>
     <br>
-    <label for="tenshoku_quest">転職クエスト</label>
     <input type="checkbox" id="tenshoku_quest" th:field="*{selectedCourseNames}" value="転職クエスト">
+    <label for="tenshoku_quest">転職クエスト</label>
     <br>
-    <label for="fuk-ly">フクリー</label>
     <input type="checkbox" id="fuk-ly" th:field="*{selectedCourseNames}" value="フクリー">
+    <label for="fuk-ly">フクリー</label>
   </div>
+<br>
+  <div>
+    <label for="remark">備考</label>
+    <br>
+    <textarea id="remark" th:field="*{student.remark}" rows="4" cols="40"></textarea>
+  </div>
+<br>
   <div>
     <button type="submit">登録</button>
   </div>
