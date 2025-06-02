@@ -2,6 +2,7 @@ package raisetech.StudentManagement.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,13 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
 import raisetech.StudentManagement.domain.StudentDetail;
 import raisetech.StudentManagement.service.StudentService;
 
-@Controller
+@RestController
 public class StudentController { // UI層
 
   private StudentService service;
@@ -28,12 +31,10 @@ public class StudentController { // UI層
   }
 
   @GetMapping("/studentList")
-  public String getStudentList(Model model) {
+  public List<StudentDetail> getStudentList() {
     List<Student> students = service.searchStudentList();
     List<StudentCourse> studentsCourses = service.searchStudentCourseList();
-
-    model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
-    return "studentList"; // templatesのファイル名
+    return converter.convertStudentDetails(students, studentsCourses);
   }
 
   @GetMapping("/activeStudentList")
@@ -71,33 +72,11 @@ public class StudentController { // UI層
     return "redirect:/studentList";
   }
 
-  @GetMapping("/studentInfo/{studentId}")
-  public String getStudentInfo(@PathVariable("studentId") Integer studentId, Model model) {
-    Student student = service.searchStudentByStudentId(studentId);
-    List<String> selectedCourses = service.getSelectedCoursesByStudentId(studentId);
-
-    StudentDetail studentDetail = new StudentDetail();
-    studentDetail.setStudent(student);
-    studentDetail.setSelectedCourseNames(selectedCourses);
-
-    model.addAttribute("studentDetail", studentDetail);
-    return "updateStudent";
-  }
-
   @PostMapping("/updateStudent")
-  public String updateStudent(@ModelAttribute StudentDetail studentDetail, BindingResult result) {
-    System.out.println(studentDetail.getSelectedCourseNames());
-    System.out.println(studentDetail.getStudent().getStudentId());
-    System.out.println(studentDetail.getStudent().isDeleted());
-    if (result.hasErrors()) {
-      result.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
-      return "updateStudent";
-    }
-
-    // 受講生情報、コース情報更新
+  public ResponseEntity<String> updateStudent(@RequestBody StudentDetail studentDetail) {
     service.updateStudent(studentDetail);
     service.addStudentCourse(studentDetail);
     service.deleteStudentCourse(studentDetail);
-    return "redirect:/studentList";
+    return ResponseEntity.ok("更新処理が成功しました。");
   }
 }
