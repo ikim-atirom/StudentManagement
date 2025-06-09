@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="raisetech.StudentManagement.repository.StudentRepository">
+
+  <!-- 受講生を全件検索 -->
+  <select id="searchStudent" resultType="raisetech.StudentManagement.data.Student">
+    SELECT *
+    FROM students
+  </select>
+
+  <!-- 受講生のコース情報を全件検索 -->
+  <select id="searchCourse" resultType="raisetech.StudentManagement.data.StudentCourse">
+    SELECT *
+    FROM students_courses
+  </select>
+
+  <!-- 受講生の詳細情報をIDで検索 -->
+  <select id="findCourseOfSelectedStudent" resultType="raisetech.StudentManagement.data.StudentCourse">
+    SELECT *
+    FROM students_courses
+    WHERE student_id = #{studentId}
+  </select>
+
+  <!-- アクティブな受講生を検索 -->
+  <select id="searchAllActiveStudentList" resultType="raisetech.StudentManagement.data.Student">
+    SELECT *
+    FROM students
+    WHERE isDeleted = false
+  </select>
+
+  <!-- 受講生を新規登録 -->
+  <insert id="registerStudent" useGeneratedKeys="true" keyProperty="studentId" parameterType="raisetech.StudentManagement.data.Student">
+    INSERT INTO students (full_name, kana_name, nickname, age, gender, email, address, remark, isDeleted)
+    VALUES (#{fullName}, #{kanaName}, #{nickname}, #{age}, #{gender}, #{email}, #{address}, #{remark}, false)
+  </insert>
+
+  <!-- 受講生コース情報を登録 -->
+  <insert id="registerStudentCourse" useGeneratedKeys="true" keyProperty="courseId" parameterType="raisetech.StudentManagement.data.StudentCourse">
+    INSERT INTO students_courses (student_id, course_name, start_date, end_date)
+    VALUES (#{studentId}, #{courseName}, #{startDate}, #{endDate})
+  </insert>
+
+  <!-- IDに紐づく受講生の詳細情報を取得 -->
+  <select id="findStudentByStudentId" parameterType="int" resultType="raisetech.StudentManagement.data.Student">
+    SELECT *
+    FROM students
+    WHERE student_id = #{studentId}
+  </select>
+
+  <!-- 受講生が選択したコース名を取得 -->
+  <select id="findSelectedCoursesByStudentId" parameterType="int" resultType="java.lang.String">
+    SELECT course_name
+    FROM students_courses
+    WHERE student_id = #{studentId}
+  </select>
+
+  <!-- 受講生情報を更新 -->
+  <update id="updateStudent" parameterType="raisetech.StudentManagement.data.Student">
+  UPDATE students
+  SET full_name = #{fullName}, kana_name = #{kanaName}, nickname = #{nickname}, age = #{age}, gender = #{gender}, email = #{email}, address = #{address}, remark = #{remark}, isDeleted = #{isDeleted} WHERE student_id = #{studentId}
+  </update>
+
+  <!-- IDに紐づく受講生のコース情報を削除 -->
+<delete id="deleteStudentCourseByCourseId" parameterType="int">
+    DELETE FROM students_courses
+    WHERE course_id = #{coursesId}
+</delete>
+
+  <!-- 受講生の存在確認 -->
+  <select id="existStudentByStudentId" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM students
+    WHERE student_id = #{studentId}
+  </select>
+
+</mapper>

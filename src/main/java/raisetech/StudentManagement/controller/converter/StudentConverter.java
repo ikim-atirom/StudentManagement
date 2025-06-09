@@ -18,18 +18,18 @@ public class StudentConverter {
   /**
    * 受講生の一覧と受講生のコース情報を結合して、受講生詳細情報のリストを作成します。
    *
-   * @param students 受講生一覧
-   * @param studentsCourses 受講生コース情報のリスト
+   * @param studentList 受講生一覧
+   * @param studentCourseList 受講生コース情報のリスト
    * @return 受講生詳細情報のリスト
    */
-  public List<StudentDetail> convertStudentDetails(List<Student> students, List<StudentCourse> studentsCourses) {
+  public List<StudentDetail> convertStudentDetails(List<Student> studentList, List<StudentCourse> studentCourseList) {
     List<StudentDetail> studentDetails = new ArrayList<>();
-    for (Student student : students) {
-      List<StudentCourse> filteredCourses = studentsCourses.stream()
+    for (Student student : studentList) {
+      List<StudentCourse> filteredCourseList = studentCourseList.stream()
           .filter(studentCourse -> student.getStudentId().equals(studentCourse.getStudentId()))
           .collect(Collectors.toList());
 
-      StudentDetail studentDetail = StudentDetail.forRegister(student, filteredCourses);
+      StudentDetail studentDetail = StudentDetail.forRegister(student, filteredCourseList);
       studentDetails.add(studentDetail);
     }
     return studentDetails;
