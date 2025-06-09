@@ -33,10 +33,10 @@ public class StudentService {
    *
    * @return 受講生一覧
    */
-  public List<StudentDetail> searchStudentList() {
-    List<Student> studentList = repository.searchStudent();
-    List<StudentCourse> studentsCoursesList = repository.searchCourse();
-    return converter.convertStudentDetails(studentList, studentsCoursesList);
+  public List<StudentDetail> searchStudents() {
+    List<Student> student = repository.searchStudent();
+    List<StudentCourse> studentCourses = repository.searchCourse();
+    return converter.convertStudentDetails(student, studentCourses);
   }
 
   /**
@@ -56,7 +56,7 @@ public class StudentService {
    *
    * @return アクティブな受講生一覧
    */
-  public List<Student> searchActiveStudentList() {
+  public List<Student> searchActiveStudents() {
     return repository.searchAllActiveStudents();
   }
 
@@ -65,19 +65,36 @@ public class StudentService {
    *
    * @return 受講生コース情報一覧
    */
-  public List<StudentCourse> searchStudentCourseList() {
+  public List<StudentCourse> searchStudentCourses() {
     return repository.searchCourse();
   }
 
   /**
    * 受講生を新規登録します。
    *
-   * @param studentDetail 受講生の詳細情報
-   * @return 登録された受講生の詳細情報
+   * @param studentDetail 受講生詳細情報
+   * @return 登録された受講生詳細情報
    */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail) {
     Student student = new Student();
+
+    initStudent(studentDetail, student);
+    repository.registerStudent(student);
+    // MySQLのカウントアップで自動生成した受講生IDを反映
+    studentDetail.getStudent().setStudentId(student.getStudentId());
+    registerStudentCourses(student.getStudentId(), studentDetail.getSelectedCourseNames());
+    studentDetail.setRegisteredCourses(repository.findCourseOfSelectedStudent(student.getStudentId()));
+    return studentDetail;
+  }
+
+  /**
+   * 受講生の初期情報を登録します。
+   *
+   * @param studentDetail 受講生詳細情報
+   * @param student 新規登録した受講生詳細情報
+   */
+  private void initStudent(StudentDetail studentDetail, Student student) {
     student.setFullName(studentDetail.getStudent().getFullName());
     student.setKanaName(studentDetail.getStudent().getKanaName());
     student.setNickname(studentDetail.getStudent().getNickname());
@@ -85,34 +102,44 @@ public class StudentService {
     student.setGender(studentDetail.getStudent().getGender());
     student.setEmail(studentDetail.getStudent().getEmail());
     student.setAddress(studentDetail.getStudent().getAddress());
-    repository.registerStudent(student);
-    // MySQLのカウントアップで自動生成した受講生IDを反映
-    studentDetail.getStudent().setStudentId(student.getStudentId());
-    registerStudentCourses(student.getStudentId(), studentDetail.getSelectedCourseNames());
-    studentDetail.setStudentsCourses(repository.findCourseOfSelectedStudent(student.getStudentId()));
-    return studentDetail;
   }
 
   /**
-   * 受講生のコース情報を登録します。
+   * 受講生のコース情報を新規登録します。
    *
    * @param studentId 受講生ID
-   * @param selectedCourseNames 選択されたコース名のリスト
+   * @param registeredCourses 登録された受講生コース情報
    */
-  public void registerStudentCourses(Integer studentId, List<String> selectedCourseNames) {
+  public void registerStudentCourses(Integer studentId, List<String> registeredCourses) {
     // 受講開始日を登録時間に、終了予定日を1年後に設定
-    LocalDate startDate = LocalDate.now();
+    LocalDate startDate = getStartDate();
     LocalDate endDate = startDate.plusYears(1);
 
     // 入力フォームで受け取ったコース情報に、受講生ID、受講開始日、終了予定日を紐づけ
-    for (String courseName : selectedCourseNames) {
-      StudentCourse studentCourse = new StudentCourse();
-      studentCourse.setStudentId(studentId);
-      studentCourse.setCourseName(courseName);
-      studentCourse.setStartDate(startDate);
-      studentCourse.setEndDate(endDate);
+    registeredCourses.forEach(courseName -> {
+      StudentCourse studentCourse = initStudentCourse(studentId,
+          courseName, startDate, endDate);
       repository.registerStudentCourse(studentCourse);
-    }
+    });
+  }
+
+  /**
+   * 受講生コース情報を登録します。
+   *
+   * @param studentId 受講生ID
+   * @param courseName コース名
+   * @param startDate 受講開始日
+   * @param endDate 終了予定日
+   * @return 登録された受講生コース情報
+   */
+  private StudentCourse initStudentCourse(Integer studentId, String courseName,
+      LocalDate startDate, LocalDate endDate) {
+    StudentCourse studentCourse = new StudentCourse();
+    studentCourse.setStudentId(studentId);
+    studentCourse.setCourseName(courseName);
+    studentCourse.setStartDate(startDate);
+    studentCourse.setEndDate(endDate);
+    return studentCourse;
   }
 
   /**
@@ -128,7 +155,7 @@ public class StudentService {
   }
 
   /**
-   * 受講生の情報を更新します。
+   * 受講生詳細情報を更新します。
    *
    * @param studentDetail 更新する受講生の詳細情報
    */
@@ -145,24 +172,21 @@ public class StudentService {
    */
   @Transactional
   public void addStudentCourse(StudentDetail studentDetail) {
-    Integer studentId = studentDetail.getStudent().getStudentId(); // 使用頻度高くなりそうなら共通化
-    List<String> existingCourseNames = getExistingCourseNames(studentId);
-    List<String> updateStudentCourseNames = getUpdatedCourseNames(studentDetail);
-    LocalDate startDate = LocalDate.now(); // これも共通化してもよかったかも
+    Integer studentId = studentDetail.getStudent().getStudentId();
+    List<String> existingCourseList = getExistingCourseList(studentId);
+    List<String> updateStudentCourseList = getUpdatedCourseList(studentDetail);
+    LocalDate startDate = getStartDate();
     LocalDate endDate = startDate.plusYears(1);
-    // 追加が必要なコース（コース名）
+    // 追加が必要なコースを抽出、追加処理
     List<String> coursesToAdd = new ArrayList<>();
-    for (String courseName : updateStudentCourseNames) {
-      if (!existingCourseNames.contains(courseName)) {
+    for (String courseName : updateStudentCourseList) {
+      if (!existingCourseList.contains(courseName)) {
         coursesToAdd.add(courseName);
       }
     }
     for (String courseName : coursesToAdd) {
-      StudentCourse newCourse = new StudentCourse();
-      newCourse.setStudentId(studentId);
-      newCourse.setCourseName(courseName);
-      newCourse.setStartDate(startDate);
-      newCourse.setEndDate(endDate);
+      StudentCourse newCourse = initStudentCourse(studentId, courseName,
+          startDate, endDate);
       repository.registerStudentCourse(newCourse);
     }
   }
@@ -173,11 +197,11 @@ public class StudentService {
   @Transactional
   public void deleteStudentCourse(StudentDetail studentDetail) {
     Integer studentId = studentDetail.getStudent().getStudentId();
-    List<StudentCourse> existingCourses = getExistingCourses(studentId);
-    List<String> updateStudentCourseNames = getUpdatedCourseNames(studentDetail);
-    // 削除が必要なコース
+    List<StudentCourse> existingCourseList = getExistingCourses(studentId);
+    List<String> updateStudentCourseNames = getUpdatedCourseList(studentDetail);
+    // 削除が必要なコースを抽出、削除処理
     List<StudentCourse> coursesToRemove = new ArrayList<>();
-    for (StudentCourse course : existingCourses) {
+    for (StudentCourse course : existingCourseList) {
       if (!updateStudentCourseNames.contains(course.getCourseName())) {
         coursesToRemove.add(course);
       }
@@ -191,7 +215,7 @@ public class StudentService {
     return repository.findCourseOfSelectedStudent(studentId);
   }
 
-  private List<String> getExistingCourseNames(Integer studentId) {
+  private List<String> getExistingCourseList(Integer studentId) {
     List<StudentCourse> existingCourses = getExistingCourses(studentId);
     List<String> existingCourseNames = new ArrayList<>();
     for (StudentCourse course : existingCourses) {
@@ -200,7 +224,11 @@ public class StudentService {
     return existingCourseNames;
   }
 
-  private List<String> getUpdatedCourseNames(StudentDetail studentDetail) {
+  private List<String> getUpdatedCourseList(StudentDetail studentDetail) {
     return studentDetail.getSelectedCourseNames();
+  }
+
+  private LocalDate getStartDate() {
+    return LocalDate.now();
   }
 }
