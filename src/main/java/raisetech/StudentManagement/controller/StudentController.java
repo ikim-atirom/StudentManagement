@@ -51,9 +51,6 @@ public class StudentController { // UI層
    */
   @GetMapping("/studentInfo/{studentId}")
   public StudentDetail getStudentInfo(@PathVariable("studentId") Integer studentId) {
-    if (repository.existStudentByStudentId(studentId) == 0) {
-      throw new IllegalArgumentException("受講生情報が存在しません。");
-    }
     return service.getStudentInfo(studentId);
   }
 
@@ -84,7 +81,8 @@ public class StudentController { // UI層
    * @return 登録された受講生詳細情報
    */
   @PostMapping("/registerStudent")
-  public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Valid StudentDetail studentDetail) {
+  public ResponseEntity<StudentDetail> registerStudent(
+      @RequestBody @Valid StudentDetail studentDetail) {
     StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
     return ResponseEntity.ok(responseStudentDetail);
   }
@@ -96,7 +94,8 @@ public class StudentController { // UI層
    * @return 更新処理の結果
    */
   @PutMapping("/updateStudent")
-  public ResponseEntity<String> updateStudentDetail(@RequestBody @Valid StudentDetail studentDetail) {
+  public ResponseEntity<String> updateStudentDetail(
+      @RequestBody @Valid StudentDetail studentDetail) {
     service.updateStudentDetail(studentDetail);
     return ResponseEntity.ok("更新処理が成功しました。");
   }
