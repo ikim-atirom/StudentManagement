@@ -24,7 +24,7 @@
   </select>
 
   <!-- アクティブな受講生を検索 -->
-  <select id="searchAllActiveStudentList" resultType="raisetech.StudentManagement.data.Student">
+  <select id="searchAllActiveStudents" resultType="raisetech.StudentManagement.data.Student">
     SELECT *
     FROM students
     WHERE isDeleted = false
