@@ -3,6 +3,7 @@ package raisetech.StudentManagement.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import raisetech.StudentManagement.controller.converter.StudentConverter;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
 import raisetech.StudentManagement.domain.StudentDetail;
+import raisetech.StudentManagement.exception.StudentNotFoundException;
 import raisetech.StudentManagement.repository.StudentRepository;
 
 /**
@@ -47,6 +49,9 @@ public class StudentService {
    */
   public StudentDetail getStudentInfo(int studentId) {
     Student student = repository.findStudentByStudentId(studentId);
+    if (student == null) {
+      throw new StudentNotFoundException("受講生ID" + studentId + "の情報は存在しません。");
+    }
     List<String> selectedCourses = repository.findSelectedCoursesByStudentId(student.getStudentId());
     return StudentDetail.forUpdate(student, selectedCourses);
   }
@@ -147,7 +152,6 @@ public class StudentService {
    *
    * @param studentDetail 更新する受講生の詳細情報
    */
-  @Transactional
   public void updateStudentDetail(StudentDetail studentDetail) {
     updateStudent(studentDetail);
     addStudentCourse(studentDetail);
@@ -159,7 +163,6 @@ public class StudentService {
    *
    * @param studentDetail 更新する受講生の詳細情報
    */
-  @Transactional
   public void updateStudent(StudentDetail studentDetail) {
     Student student = studentDetail.getStudent();
     repository.updateStudent(student);
@@ -170,7 +173,6 @@ public class StudentService {
    *
    * @param studentDetail 更新する受講生の詳細情報
    */
-  @Transactional
   public void addStudentCourse(StudentDetail studentDetail) {
     Integer studentId = studentDetail.getStudent().getStudentId();
     List<String> existingCourseList = getExistingCourseList(studentId);
@@ -178,37 +180,27 @@ public class StudentService {
     LocalDate startDate = getStartDate();
     LocalDate endDate = startDate.plusYears(1);
     // 追加が必要なコースを抽出、追加処理
-    List<String> coursesToAdd = new ArrayList<>();
-    for (String courseName : updateStudentCourseList) {
-      if (!existingCourseList.contains(courseName)) {
-        coursesToAdd.add(courseName);
-      }
-    }
-    for (String courseName : coursesToAdd) {
-      StudentCourse newCourse = initStudentCourse(studentId, courseName,
-          startDate, endDate);
-      repository.registerStudentCourse(newCourse);
-    }
+    List<String> coursesToAdd = updateStudentCourseList.stream()
+        .filter(courseName -> !existingCourseList.contains(courseName))
+        .toList();
+    coursesToAdd.stream().map(courseName -> initStudentCourse(studentId, courseName,
+            startDate, endDate))
+        .forEachOrdered(newCourse -> repository.registerStudentCourse(newCourse));
   }
 
   /**
    * 受講生のコース情報を更新（削除）します。
    */
-  @Transactional
   public void deleteStudentCourse(StudentDetail studentDetail) {
     Integer studentId = studentDetail.getStudent().getStudentId();
     List<StudentCourse> existingCourseList = getExistingCourses(studentId);
     List<String> updateStudentCourseNames = getUpdatedCourseList(studentDetail);
     // 削除が必要なコースを抽出、削除処理
-    List<StudentCourse> coursesToRemove = new ArrayList<>();
-    for (StudentCourse course : existingCourseList) {
-      if (!updateStudentCourseNames.contains(course.getCourseName())) {
-        coursesToRemove.add(course);
-      }
-    }
-    for (StudentCourse course : coursesToRemove) {
-      repository.deleteStudentCourseByCourseId(course.getCourseId());
-    }
+    List<StudentCourse> coursesToRemove = existingCourseList.stream()
+        .filter(course -> !updateStudentCourseNames.contains(course.getCourseName()))
+        .toList();
+    coursesToRemove.forEach(
+        course -> repository.deleteStudentCourseByCourseId(course.getCourseId()));
   }
 
   private List<StudentCourse> getExistingCourses(Integer studentId) {
