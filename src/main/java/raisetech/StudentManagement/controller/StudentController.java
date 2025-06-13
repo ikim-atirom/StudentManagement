@@ -1,5 +1,8 @@
 package raisetech.StudentManagement.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,61 +28,75 @@ import raisetech.StudentManagement.service.StudentService;
 public class StudentController { // UI層
 
   private StudentService service;
-  private StudentRepository repository;
 
   @Autowired
-  public StudentController(StudentService service, StudentRepository repository) {
+  public StudentController(StudentService service) {
     this.service = service;
-    this.repository = repository;
   }
 
-  /**
-   * 受講生詳細の一覧を全件検索します。
-   *
-   * @return 受講生詳細一覧検索
-   */
+  @Operation(
+      summary = "一覧検索",
+      description = "受講生詳細の一覧を全件検索します。",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "受講生詳細一覧の取得に成功しました。"),
+          @ApiResponse(responseCode = "500", description = "サーバーエラーが発生しました。")
+      }
+  )
   @GetMapping("/studentList")
   public List<StudentDetail> getStudentList() {
     return service.searchStudents();
   }
 
-  /**
-   * IDに紐づく受講生の詳細情報を取得します。
-   *
-   * @param studentId 受講生ID
-   * @return 受講生詳細情報
-   */
+  @Operation(
+      summary = "受講生詳細情報の取得",
+      description = "IDに紐づく受講生の詳細情報を取得します。",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "受講生詳細情報の取得に成功しました。"),
+          @ApiResponse(responseCode = "404", description = "受講生が見つかりませんでした。"),
+          @ApiResponse(responseCode = "500", description = "サーバーエラーが発生しました。")
+      }
+  )
   @GetMapping("/studentInfo/{studentId}")
-  public StudentDetail getStudentInfo(@PathVariable("studentId") Integer studentId) {
+  public StudentDetail getStudentInfo(
+      @Parameter(description = "受講生ID")
+      @PathVariable("studentId") Integer studentId) {
     return service.getStudentInfo(studentId);
   }
 
-  /**
-   * アクティブな受講生の一覧を検索します。
-   *
-   * @return アクティブな受講生一覧
-   */
+  @Operation(
+      summary = "アクティブな受講生の一覧検索",
+      description = "アクティブな受講生の一覧を検索します。",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "アクティブな受講生の一覧取得に成功しました。"),
+          @ApiResponse(responseCode = "500", description = "サーバーエラーが発生しました。")
+      }
+  )
   @GetMapping("/activeStudentList")
   public List<Student> getActiveStudentList() {
     return service.searchActiveStudents();
   }
 
-  /**
-   * 受講生のコース情報を全件検索します。
-   *
-   * @return 受講生コース情報一覧
-   */
+  @Operation(
+      summary = "受講生コース情報の全件検索",
+      description = "受講生のコース情報を全件検索します。",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "受講生コース情報の取得に成功しました。"),
+          @ApiResponse(responseCode = "500", description = "サーバーエラーが発生しました。")
+      }
+  )
   @GetMapping("/studentCourseList")
   public List<StudentCourse> getStudentCourseList() {
     return service.searchStudentCourses();
   }
 
-  /**
-   * 受講生詳細情報を新規登録します。
-   *
-   * @param studentDetail 受講生詳細情報
-   * @return 登録された受講生詳細情報
-   */
+  @Operation(
+      summary = "受講生の新規登録",
+      description = "受講生詳細情報を新規登録します。",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "受講生の新規登録に成功しました。"),
+          @ApiResponse(responseCode = "500", description = "サーバーエラーが発生しました。")
+      }
+  )
   @PostMapping("/registerStudent")
   public ResponseEntity<StudentDetail> registerStudent(
       @RequestBody @Valid StudentDetail studentDetail) {
@@ -87,12 +104,15 @@ public class StudentController { // UI層
     return ResponseEntity.ok(responseStudentDetail);
   }
 
-  /**
-   * 受講生詳細情報を更新、削除（論理削除）します。
-   *
-   * @param studentDetail 更新する受講生詳細情報
-   * @return 更新処理の結果
-   */
+  @Operation(
+      summary = "受講生の更新",
+      description = "受講生詳細情報を更新、削除（論理削除）します。",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "受講生の更新処理が成功しました。"),
+          @ApiResponse(responseCode = "404", description = "受講生が見つかりませんでした。"),
+          @ApiResponse(responseCode = "500", description = "サーバーエラーが発生しました。")
+      }
+  )
   @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudentDetail(
       @RequestBody @Valid StudentDetail studentDetail) {
