@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
  * 受講生情報の取得や登録、更新時に発生する可能性のある例外を処理します。
  */
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class ControllerExceptionHandler {
 
   /**
    * 受講生情報が存在しない場合の例外を処理します。
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
    * @param ex 受講生情報が存在しない場合の例外
    * @return 404 Not Foundのレスポンス
    */
-  @org.springframework.web.bind.annotation.ExceptionHandler(StudentNotFoundException.class)
+  @org.springframework.web.bind.annotation.ExceptionHandler
   public ResponseEntity<Map<String, String>> handleStudentNotFoundException(StudentNotFoundException ex) {
     Map<String, String> errorResponse = new LinkedHashMap<>();
     errorResponse.put("timestamp", LocalDateTime.now().toString());
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
    * @param ex バリデーションエラー
    * @return 400 Bad Requestのレスポンス
    */
-  @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
+  @org.springframework.web.bind.annotation.ExceptionHandler
   public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
     Map<String, Object> errorResponse = new LinkedHashMap<>();
     errorResponse.put("timestamp", LocalDateTime.now());
