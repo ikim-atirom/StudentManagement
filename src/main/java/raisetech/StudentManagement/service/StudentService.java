@@ -54,6 +54,7 @@ public class StudentService {
     }
     List<String> selectedCourses = repository.findSelectedCoursesByStudentId(student.getStudentId());
     return StudentDetail.forUpdate(student, selectedCourses);
+    // 処理をConverterに移してもいいかもしれない
   }
 
   /**
