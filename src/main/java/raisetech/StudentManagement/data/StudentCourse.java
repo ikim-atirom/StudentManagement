@@ -1,6 +1,7 @@
 package raisetech.StudentManagement.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.Getter;
@@ -13,7 +14,7 @@ public class StudentCourse {
 
   private Integer courseId;
 
-  @NotNull
+  @NotBlank(message = "コース名を入力してください。")
   private String courseName;
 
   private Integer studentId;

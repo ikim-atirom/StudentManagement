@@ -109,7 +109,6 @@ public class StudentController { // UI層
       description = "受講生詳細情報を更新、削除（論理削除）します。",
       responses = {
           @ApiResponse(responseCode = "200", description = "受講生の更新処理が成功しました。"),
-          @ApiResponse(responseCode = "404", description = "受講生が見つかりませんでした。"),
           @ApiResponse(responseCode = "500", description = "サーバーエラーが発生しました。")
       }
   )
