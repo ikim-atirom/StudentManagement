@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS students
+(
+  student_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(255) NOT NULL,
+  kana_name VARCHAR(255) NOT NULL,
+  nickname VARCHAR(255) DEFAULT NULL,
+  age INT NOT NULL,
+  gender VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  remark VARCHAR(1000) DEFAULT NULL,
+  isDeleted BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS students_courses
+(
+  course_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  course_name VARCHAR(255) DEFAULT NULL,
+  student_id INT DEFAULT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL
+);
