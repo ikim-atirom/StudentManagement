@@ -18,5 +18,8 @@ CREATE TABLE IF NOT EXISTS students_courses
   course_name VARCHAR(255) DEFAULT NULL,
   student_id INT DEFAULT NULL,
   start_date DATE NOT NULL,
-  end_date DATE NOT NULL
+  end_date DATE NOT NULL,
+  CONSTRAINT fk_student
+    FOREIGN KEY (student_id) REFERENCES students(student_id)
+    ON DELETE CASCADE
 );

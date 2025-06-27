@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import raisetech.StudentManagement.data.Student;
 import raisetech.StudentManagement.data.StudentCourse;
 
@@ -33,6 +34,12 @@ class StudentRepositoryTest {
   void IDに紐づく受講生のコース情報を取得できること() {
     List<StudentCourse> actual = sut.findCourseOfSelectedStudent(1);
     assertThat(actual.size()).isEqualTo(2);
+  }
+
+  @Test
+  void IDに紐づく受講生のコース情報が存在しない場合は空のリストが返ること() {
+    List<StudentCourse> actual = sut.findCourseOfSelectedStudent(999);
+    assertThat(actual).isEmpty();
   }
 
   @Test
@@ -65,7 +72,7 @@ class StudentRepositoryTest {
   @Test
   void 受講生コースの登録が行えること() {
     StudentCourse studentCourse = new StudentCourse();
-    studentCourse.setStudentId(999);
+    studentCourse.setStudentId(1);
     studentCourse.setCourseName("テストコース");
     studentCourse.setStartDate(LocalDate.now());
     studentCourse.setEndDate(LocalDate.now().plusYears(1));
@@ -76,6 +83,19 @@ class StudentRepositoryTest {
     List<StudentCourse> actual = sut.searchCourse();
 
     assertThat(actual.size()).isEqualTo(beforeCount + 1);
+  }
+
+  @Test
+  void 存在しない受講生IDで受講生コースの登録を行うと例外が発生すること() {
+    StudentCourse studentCourse = new StudentCourse();
+    studentCourse.setStudentId(999); // 存在しない受講生ID
+    studentCourse.setCourseName("外部キー制約テストコース");
+    studentCourse.setStartDate(LocalDate.now());
+    studentCourse.setEndDate(LocalDate.now().plusYears(1));
+
+    // 存在しない受講生IDで受講生コースを登録した場合、DataIntegrityViolationExceptionが発生することを確認
+    assertThatThrownBy(() -> sut.registerStudentCourse(studentCourse))
+        .isInstanceOf(DataIntegrityViolationException.class);
   }
 
   @Test
@@ -95,10 +115,22 @@ class StudentRepositoryTest {
   }
 
   @Test
+  void IDに紐づく受講生の情報が存在しない場合はnullが返ること() {
+    Student actual = sut.findStudentByStudentId(999);
+    assertThat(actual).isNull();
+  }
+
+  @Test
   void 受講生が選択したコース名を取得できること() {
     List<String> actual = sut.findSelectedCoursesByStudentId(1);
     assertThat(actual.size()).isEqualTo(2);
     assertThat(actual).contains("AWSフル", "転職クエスト");
+  }
+
+  @Test
+  void 受講生が選択したコース名が存在しない場合は空のリストが返ること() {
+    List<String> actual = sut.findSelectedCoursesByStudentId(999);
+    assertThat(actual).isEmpty();
   }
 
   @Test
@@ -132,11 +164,38 @@ class StudentRepositoryTest {
   }
 
   @Test
+  void 受講生の情報を更新するときに存在しない受講生IDを指定するとnullが返ること() {
+    Student student = new Student();
+    student.setStudentId(999); // 存在しない受講生ID
+    student.setFullName("テスト名前");
+    student.setKanaName("テストナマエ");
+    student.setNickname("テストニックネーム");
+    student.setAge(0);
+    student.setGender("回答しない");
+    student.setEmail("test@example.com");
+    student.setAddress("テスト地域");
+    student.setRemark("");
+    student.setDeleted(false);
+
+    sut.updateStudent(student);
+    Student updatedStudent = sut.findStudentByStudentId(999);
+    assertThat(updatedStudent).isNull();
+  }
+
+  @Test
   void IDに紐づく受講生のコース情報を削除できること() {
     sut.deleteStudentCourseByCourseId(7);
     // コースIDが7に紐づく受講生（2コース受講登録中）のコース情報が削除されたことを確認
     List<StudentCourse> actual = sut.findCourseOfSelectedStudent(1);
     assertThat(actual.size()).isEqualTo(1);
+  }
+
+  @Test
+  void IDに紐づく受講生のコース情報が存在しない場合は何も削除されないこと() {
+    int beforeCount = sut.searchCourse().size();
+    sut.deleteStudentCourseByCourseId(999); // 存在しないコースIDで削除
+    List<StudentCourse> actual = sut.searchCourse();
+    assertThat(actual.size()).isEqualTo(beforeCount);
   }
 
   @Test
