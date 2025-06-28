@@ -26,10 +26,10 @@ public interface StudentRepository {  //DB
   List<StudentCourse> searchCourse();
 
   /**
-   * IDに紐づく受講生の詳細情報を取得します。
+   * IDに紐づく受講生のコース情報を取得します。
    *
    * @param studentId 受講生ID
-   * @return 受講生詳細情報
+   * @return 受講生コース情報
    */
   List<StudentCourse> findCourseOfSelectedStudent(int studentId);
 
@@ -53,10 +53,10 @@ public interface StudentRepository {  //DB
   void registerStudentCourse(StudentCourse studentCourse);
 
   /**
-   * IDに紐づく受講生の詳細情報を取得します。
+   * IDに紐づく受講生の情報を取得します。
    *
    * @param studentId 受講生ID
-   * @return 受講生詳細情報
+   * @return 受講生情報
    */
   Student findStudentByStudentId(int studentId);
 
